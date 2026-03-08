@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Consulate.API/Consulate.API.csproj" />
+  <Project Path="Consulate.Application/Consulate.Application.csproj" />
+  <Project Path="Consulate.Domain/Consulate.Domain.csproj" />
+  <Project Path="Consulate.Infrastructure/Consulate.Infrastructure.csproj" />
+</Solution>
