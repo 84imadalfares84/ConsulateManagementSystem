@@ -14,7 +14,7 @@ namespace Consulate.Application.Features.Employees.Commands
         {
             RuleFor(x => x.FullName)
                 .NotEmpty()
-                .MaximumLength(100);
+                .MaximumLength(10);
 
             RuleFor(x => x.Email)
                 .NotEmpty()

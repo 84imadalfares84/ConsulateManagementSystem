@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Consulate.Application.Features.Employees.Queries
 {
     public class GetAllEmployeesQueryHandler
-        : IRequestHandler<GetAllEmployeesQuery, PagedResult<EmployeeDto>>
+        : IRequestHandler<GetAllEmployeesQuery, PagedResult<EmployeeDto>>//This class is a MediatR request handler that handles the GetAllEmployeesQuery and returns a paged result of EmployeeDto objects.
     {
         private readonly IEmployeeRepository _repository;
         private readonly IMapper _mapper;
@@ -34,11 +34,11 @@ namespace Consulate.Application.Features.Employees.Queries
             var totalCount = employees.Count();
 
             var pagedEmployees = employees
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
+                .Skip((request.PageNumber - 1) * request.PageSize)//تجاهل العناصر السابقة بناءً على رقم الصفحة وحجم الصفحة
+                .Take(request.PageSize)//أخذ عدد العناصر المحدد في حجم الصفحة
                 .ToList();
 
-            var mappedEmployees = _mapper.Map<List<EmployeeDto>>(pagedEmployees);
+            var mappedEmployees = _mapper.Map<List<EmployeeDto>>(pagedEmployees);//تحويل الكيانات إلى DTOs باستخدام AutoMapper
 
             return new PagedResult<EmployeeDto>
             {

@@ -40,4 +40,22 @@ public class EmployeesController : ControllerBase
 
         return Ok(result);
     }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(
+        Guid id,
+        UpdateEmployeeCommand command)
+    {
+        command.Id = id;
+
+        var result = await _mediator.Send(command);
+
+        return Ok(result);
+    }
+    // DELETE: api/employees/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _mediator.Send(new DeleteEmployeeCommand(id));
+        return NoContent(); // 204 لا توجد محتويات
+    }
 }

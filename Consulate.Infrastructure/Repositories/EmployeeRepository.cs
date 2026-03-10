@@ -34,6 +34,10 @@ namespace Consulate.Infrastructure.Repositories
             
         }
 
-       
+        public async Task UpdateAsync(Employee employee)
+        {
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+        }
     }
 }

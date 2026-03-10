@@ -12,6 +12,8 @@ namespace Consulate.Application.Interfaces
         Task AddAsync(Employee employee);
         Task<Employee> GetByIdAsync(Guid id);
         Task <IEnumerable<Employee>> GetAllAsync();
+        Task UpdateAsync(Employee employee);
+        
 
     }
 }

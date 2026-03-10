@@ -8,12 +8,11 @@ namespace Consulate.Application.Common.Pagination
 {
     public class PagedResult<T>
     {
-        public IEnumerable<T> Items { get; set; } = new List<T>();
+        public IEnumerable<T> Items { get; set; } = new List<T>();//employees list
+        public int TotalCount { get; set; }//total number of employees in the database
 
-        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }//current page number
 
-        public int PageNumber { get; set; }
-
-        public int PageSize { get; set; }
+        public int PageSize { get; set; }  //number of items per page
     }
 }
