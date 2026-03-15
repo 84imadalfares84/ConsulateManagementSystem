@@ -16,6 +16,7 @@ namespace Consulate.Infrastructure.Persistence
         }
 
         public DbSet<Employee> Employees { get; set; }
+        //add other DbSet properties for your entities here
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
