@@ -1,16 +1,17 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Consulate.Application.Common;
 using Consulate.Application.Features.Employees.Commands;
 using Consulate.Application.Interfaces;
 using Consulate.Application.Mappings;
 using Consulate.Infrastructure.Persistence;
 using Consulate.Infrastructure.Repositories;
+using Consulate.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,23 +36,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddSwaggerGen();
 
+// هذا الكود يخبر التطبيق كيف يتحقق من صحة التوكن المرسل من المستخدم
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
+        ValidateIssuer = true,// التحقق من الجهة المصدرة للتوكن
+        ValidateAudience = true,// التحقق من الجهة المستهدفة للتوكن
+        ValidateLifetime = true,// التحقق من صلاحية التوكن (تاريخ الانتهاء)
+        ValidateIssuerSigningKey = true,// التحقق من صحة توقيع التوكن باستخدام المفتاح السري
 
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],// الجهة المصدرة للتوكن (السيرفر الذي اصدر هذا التوكن)
+        ValidAudience = builder.Configuration["Jwt:Audience"],// الجهة المستهدفة للتوكن (المستهلك لهذا التوكن)
 
-        IssuerSigningKey = new SymmetricSecurityKey(
+        IssuerSigningKey = new SymmetricSecurityKey(// المفتاح السري المستخدم لتوقيع التوكن
             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
