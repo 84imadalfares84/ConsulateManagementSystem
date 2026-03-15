@@ -16,11 +16,21 @@ namespace Consulate.Infrastructure.Persistence
         }
 
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Role> Roles { get; set; }
+
+        public DbSet<UserRole> UserRoles { get; set; }
+
         //add other DbSet properties for your entities here
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            base.OnModelCreating(modelBuilder);
+            // modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            //base.OnModelCreating(modelBuilder);
+            builder.Entity<UserRole>()
+           .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            base.OnModelCreating(builder);
         }
     }
 }

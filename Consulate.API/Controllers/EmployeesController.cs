@@ -1,7 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Consulate.Application.Features.Employees.Commands;
+﻿using Consulate.Application.Features.Employees.Commands;
 using Consulate.Application.Features.Employees.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Consulate.API.Controllers;
 
@@ -30,6 +31,7 @@ public class EmployeesController : ControllerBase
         var employee = await _mediator.Send(new GetEmployeeByIdQuery(id));
         return Ok(employee);
     }
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAll(
     [FromQuery] int pageNumber = 1,
