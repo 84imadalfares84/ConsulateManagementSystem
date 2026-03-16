@@ -1,4 +1,5 @@
-﻿using Consulate.Application.Features.Auth.DTOS;
+﻿using BCrypt.Net;
+using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
 using MediatR;
 using System;
@@ -28,14 +29,19 @@ namespace Consulate.Application.Features.Auth.Comands.Login
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
-            if (user == null)
-                throw new Exception("Invalid email or password");
+            //if (user == null)
+            //    throw new Exception("Invalid email or password");
 
-            //
-            if (user.PasswordHash != request.Password)
+            
+            //if (user.PasswordHash != request.Password)
+            //    throw new Exception("Invalid email or password");
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
                 throw new Exception("Invalid email or password");
+            }
 
             var token = _jwtService.GenerateAccessToken(user);
+
 
             return new AuthResponse(
                 token,

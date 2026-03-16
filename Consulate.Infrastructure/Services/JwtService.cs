@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace Consulate.Infrastructure.Services
 {
     //token = headers + payload(claims) + signature
+    // هذه الخدمة لتوليد رمز JWT (JSON Web Token) الذي يستخدم للمصادقة والتفويض في تطبيقات الويب.
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _config;
