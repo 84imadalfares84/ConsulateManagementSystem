@@ -32,6 +32,7 @@ public class EmployeesController : ControllerBase
         return Ok(employee);
     }
     //[Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll(
     [FromQuery] int pageNumber = 1,

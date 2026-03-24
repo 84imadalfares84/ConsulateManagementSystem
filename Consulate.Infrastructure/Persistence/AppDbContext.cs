@@ -25,10 +25,18 @@ namespace Consulate.Infrastructure.Persistence
         //add other DbSet properties for your entities here
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            //base.OnModelCreating(modelBuilder);
             builder.Entity<UserRole>()
-           .HasKey(ur => new { ur.UserId, ur.RoleId });
+    .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            builder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            builder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
 
             base.OnModelCreating(builder);
         }

@@ -21,7 +21,7 @@ builder.Services.AddMediatR(cfg =>
         typeof(CreateEmployeeCommand).Assembly));
 
 // AutoMapper
-object value = builder.Services.AddAutoMapper(typeof(EmployeeProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(EmployeeProfile).Assembly);
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeCommandValidator>();
@@ -65,6 +65,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

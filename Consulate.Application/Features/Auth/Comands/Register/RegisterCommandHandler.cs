@@ -16,15 +16,19 @@ namespace Consulate.Application.Features.Auth.Comands.Register
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
+  
 
         public RegisterCommandHandler(
+        
             IUserRepository userRepository,
             IPasswordHasher passwordHasher,
+           
             IJwtService jwtService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
+         
         }
 
         public async Task<AuthResponse> Handle(
@@ -37,8 +41,10 @@ namespace Consulate.Application.Features.Auth.Comands.Register
             {
                 Id = Guid.NewGuid(),
                 Email = request.Email,
-                PasswordHash = hashedPassword
+                PasswordHash = hashedPassword,
+               
             };
+          
 
             await _userRepository.AddAsync(user);
 

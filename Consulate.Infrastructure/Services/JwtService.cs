@@ -2,13 +2,9 @@
 using Consulate.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Consulate.Infrastructure.Services
 {
@@ -34,11 +30,18 @@ namespace Consulate.Infrastructure.Services
                 key,
                 SecurityAlgorithms.HmacSha256);
             // انشاء الادعاءات (claims) التي تحتوي على معلومات المستخدم مثل معرفه وبريده الإلكتروني
-            var claims = new[]
+            var claims = new List<Claim>
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email)
         };
+            //  إضافة Roles
+            var roles = user.UserRoles.Select(ur => ur.Role.Name);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             // انشاء رمز JWT باستخدام البيانات السابقة وتحديد الجهة المصدرة والجهة المستهدفة ومدة الصلاحية
 
             var token = new JwtSecurityToken(
