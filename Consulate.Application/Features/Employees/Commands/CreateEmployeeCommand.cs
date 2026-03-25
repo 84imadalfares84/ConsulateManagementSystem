@@ -10,6 +10,8 @@ namespace Consulate.Application.Features.Employees.Commands
     public record CreateEmployeeCommand(
     string FullName,
     string Email,
-    string Position
+    string Password,
+    string Position,
+    string? RoleName = null   // يمكن تحديد الدور عند الإنشاء
 ) : IRequest<Guid>;
 }

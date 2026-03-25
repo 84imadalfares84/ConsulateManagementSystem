@@ -33,5 +33,13 @@ namespace Consulate.Infrastructure.Repositories
               .ThenInclude(ur => ur.Role)
               .FirstOrDefaultAsync(x => x.Email == email);
         }
+        public async Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

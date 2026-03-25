@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Consulate.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260324113318_roledescription")]
-    partial class roledescription
+    [Migration("20260325064050_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,14 @@ namespace Consulate.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Employees");
                 });
@@ -165,6 +172,15 @@ namespace Consulate.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Consulate.Domain.Entities.Employee", b =>
+                {
+                    b.HasOne("Consulate.Domain.Entities.User", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("Consulate.Domain.Entities.Employee", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Consulate.Domain.Entities.TransactionOwner", b =>
                 {
                     b.HasOne("Consulate.Domain.Entities.Employee", "Employee")
@@ -207,6 +223,9 @@ namespace Consulate.Infrastructure.Migrations
 
             modelBuilder.Entity("Consulate.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Employee")
+                        .IsRequired();
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

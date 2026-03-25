@@ -10,6 +10,7 @@ namespace Consulate.Application.Features.Auth.Comands.Register
 {
     public record RegisterCommand(
     string Email,
-    string Password
+    string Password,
+    string? RoleName = null
 ) : IRequest<AuthResponse>;
 }

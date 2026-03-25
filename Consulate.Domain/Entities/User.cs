@@ -15,6 +15,7 @@ namespace Consulate.Domain.Entities
 
         public ICollection<UserRole> UserRoles { get; set; }
             = new List<UserRole>();
+        public Employee Employee { get; set; }//navigation property 
     }
 }
 

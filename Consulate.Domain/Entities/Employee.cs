@@ -1,9 +1,4 @@
 ﻿using Consulate.Domain.Comon;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Consulate.Domain.Entities
 {
@@ -17,5 +12,7 @@ namespace Consulate.Domain.Entities
 
         public ICollection<TransactionOwner> TransactionOwners { get; set; }
             = new List<TransactionOwner>();
+        public Guid? UserId { get; set; }
+        public User User { get; set; }
     }
 }

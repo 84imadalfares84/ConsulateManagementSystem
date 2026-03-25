@@ -25,8 +25,9 @@ namespace Consulate.Infrastructure.Persistence
         //add other DbSet properties for your entities here
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //  إعداد العلاقة بين UserRole و User / Role
             builder.Entity<UserRole>()
-    .HasKey(ur => new { ur.UserId, ur.RoleId });
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
 
             builder.Entity<UserRole>()
                 .HasOne(ur => ur.User)
@@ -37,6 +38,18 @@ namespace Consulate.Infrastructure.Persistence
                 .HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
+
+            // علاقة Employee ↔ User
+            builder.Entity<Employee>()
+                .HasOne(e => e.User)
+                .WithOne(u => u.Employee)
+                .HasForeignKey<Employee>(e => e.UserId);
+
+            //  إضافة Seed Data للأدوار
+            builder.Entity<Role>().HasData(
+                new Role { Id = Guid.NewGuid(), Name = "Admin" },
+                new Role { Id = Guid.NewGuid(), Name = "Officer" }
+            );
 
             base.OnModelCreating(builder);
         }

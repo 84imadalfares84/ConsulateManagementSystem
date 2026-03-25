@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Consulate.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260315081758_AddAuthTables")]
-    partial class AddAuthTables
+    [Migration("20260325075418_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,14 @@ namespace Consulate.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Employees");
                 });
@@ -79,6 +86,22 @@ namespace Consulate.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e333ac00-5394-4f1d-8491-27e5d2549b52"),
+                            CreatedAt = new DateTime(2026, 3, 25, 7, 54, 17, 729, DateTimeKind.Utc).AddTicks(6316),
+                            IsDeleted = false,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("c0614f57-717f-4999-b4e3-dd93346a0332"),
+                            CreatedAt = new DateTime(2026, 3, 25, 7, 54, 17, 729, DateTimeKind.Utc).AddTicks(6327),
+                            IsDeleted = false,
+                            Name = "Officer"
+                        });
                 });
 
             modelBuilder.Entity("Consulate.Domain.Entities.TransactionOwner", b =>
@@ -161,6 +184,15 @@ namespace Consulate.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("Consulate.Domain.Entities.Employee", b =>
+                {
+                    b.HasOne("Consulate.Domain.Entities.User", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("Consulate.Domain.Entities.Employee", "UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Consulate.Domain.Entities.TransactionOwner", b =>
                 {
                     b.HasOne("Consulate.Domain.Entities.Employee", "Employee")
@@ -203,6 +235,9 @@ namespace Consulate.Infrastructure.Migrations
 
             modelBuilder.Entity("Consulate.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Employee")
+                        .IsRequired();
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

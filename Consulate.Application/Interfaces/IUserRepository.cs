@@ -11,5 +11,7 @@ namespace Consulate.Application.Interfaces
     {
         Task<User?> GetByEmailAsync(string email);
         Task AddAsync(User user);
+        Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken);
+        Task SaveChangesAsync(); // مهم
     }
 }

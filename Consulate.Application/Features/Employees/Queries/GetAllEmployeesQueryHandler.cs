@@ -2,6 +2,7 @@
 using Consulate.Application.Common.Pagination;
 using Consulate.Application.DTOs;
 using Consulate.Application.Interfaces;
+using Consulate.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,8 @@ namespace Consulate.Application.Features.Employees.Queries
                 Items = mappedEmployees,
                 TotalCount = totalCount,
                 PageNumber = request.PageNumber,
-                PageSize = request.PageSize
+                PageSize = request.PageSize,
+                
             };
         }
     }
