@@ -31,7 +31,7 @@ public class EmployeesController : ControllerBase
         var employee = await _mediator.Send(new GetEmployeeByIdQuery(id));
         return Ok(employee);
     }
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     //[Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll(
