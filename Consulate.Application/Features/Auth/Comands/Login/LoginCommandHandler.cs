@@ -1,5 +1,6 @@
 ﻿using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
+using Consulate.Domain.Entities;
 using MediatR;
 
 namespace Consulate.Application.Features.Auth.Comands.Login
@@ -27,13 +28,19 @@ namespace Consulate.Application.Features.Auth.Comands.Login
             {
                 throw new Exception("Invalid email or password");
             }
-
-            var token = _jwtService.GenerateAccessToken(user);
+            // Generate JWT token
+            var accessToKen = _jwtService.GenerateAccessToken(user);
+            // Generate refresh token
+            var refreshToken = _jwtService.GenerateRefreshToken();
+            // Save refresh token and its expiry time in the database
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userRepository.SaveChangesAsync();
 
 
             return new AuthResponse(
-                token,
-                DateTime.UtcNow.AddMinutes(30)
+                accessToKen,
+                refreshToken
             );
         }
     }

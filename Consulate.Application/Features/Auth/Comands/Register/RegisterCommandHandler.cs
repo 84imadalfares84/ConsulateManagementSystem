@@ -59,26 +59,15 @@ namespace Consulate.Application.Features.Auth.Comands.Register
                     RoleId = role.Id
                 });
             }
-            /*
-            var role = await _userRepository.GetByEmailAsync(roleName);
-
-            if (role != null)
-            {
-                user.UserRoles.Add(new UserRole
-                {
-                    UserId = user.Id,
-                    RoleId = role.Id
-                });
-            }
-
-            */
+           
             await _userRepository.AddAsync(user);
 
-            var token = _jwtService.GenerateAccessToken(user);
+            var accessToKen = _jwtService.GenerateAccessToken(user);
+            var refreshToken = _jwtService.GenerateRefreshToken();
 
             return new AuthResponse(
-                token,
-                DateTime.UtcNow.AddMinutes(30)
+                accessToKen,refreshToken
+                
             );
         }
     }

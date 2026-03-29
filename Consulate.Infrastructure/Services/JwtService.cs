@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Consulate.Infrastructure.Services
@@ -42,7 +43,7 @@ namespace Consulate.Infrastructure.Services
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            // انشاء رمز JWT باستخدام البيانات السابقة وتحديد الجهة المصدرة والجهة المستهدفة ومدة الصلاحية
+            // توليد التوكن
 
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],// الجهة المصدرة من هو السيرفر الذي اصدر هذا التوكن
@@ -52,11 +53,18 @@ namespace Consulate.Infrastructure.Services
                 signingCredentials: creds // بيانات التوقيع التي تم انشاؤها سابقا
             );
 
+
             return new JwtSecurityTokenHandler().WriteToken(token);
             //JwtSecurityTokenHandler() كلاس جاهز موجود في مكتبة JWT 
             //يستخدم لكتابة التوكن في شكل نصي يمكن إرساله إلى العميل
             //WriteToken(token) تحويل كائن التوكن (JwtSecurityToken) إلى String يمكن إرساله للمستخدم.
             //بعد هذا السطر تم تحويل التوكن الى نص يمكن إرساله إلى العميل لاستخدامه في الطلبات المستقبلية للمصادقة والتفويض.
+        }
+        // توليد توكن التحديث الذي يستخدم لتجديد صلاحية التوكن الرئيسي بعد انتهاء صلاحيته
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(
+                RandomNumberGenerator.GetBytes(64));// توليد 64 بايت عشوائية وتحويلها إلى نص Base64 لاستخدامها كتوكين تحديث
         }
     }
 }

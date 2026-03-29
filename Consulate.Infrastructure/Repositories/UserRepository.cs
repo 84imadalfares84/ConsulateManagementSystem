@@ -26,6 +26,11 @@ namespace Consulate.Infrastructure.Repositories
 
         }
 
+        public Task GenerateRefreshToken()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users
@@ -41,5 +46,8 @@ namespace Consulate.Infrastructure.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+       
     }
-}
+    }
+

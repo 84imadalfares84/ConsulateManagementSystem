@@ -13,5 +13,7 @@ namespace Consulate.Application.Interfaces
         Task AddAsync(User user);
         Task<Role?> GetRoleByNameAsync(string roleName, CancellationToken cancellationToken);
         Task SaveChangesAsync(); // مهم
+        Task GenerateRefreshToken();
+       
     }
 }
