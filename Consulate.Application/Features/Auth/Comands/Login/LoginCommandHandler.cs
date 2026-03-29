@@ -1,12 +1,6 @@
-﻿using BCrypt.Net;
-using Consulate.Application.Features.Auth.DTOS;
+﻿using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Consulate.Application.Features.Auth.Comands.Login
 {
@@ -28,7 +22,6 @@ namespace Consulate.Application.Features.Auth.Comands.Login
             CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
-
             
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {

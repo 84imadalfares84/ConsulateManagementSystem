@@ -30,8 +30,12 @@ namespace Consulate.Infrastructure.Repositories
         }
         public async Task<IEnumerable<Employee>> GetAllAsync()
         {
-            return  await _context.Employees.ToListAsync();
-            
+            return await _context.Employees
+               .Include(e => e.User)
+                 .ThenInclude(u => u.UserRoles)
+                   .ThenInclude(ur => ur.Role)
+                     .ToListAsync();
+
         }
 
         public async Task UpdateAsync(Employee employee)

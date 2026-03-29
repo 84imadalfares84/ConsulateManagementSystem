@@ -29,12 +29,7 @@ namespace Consulate.Application.Features.Employees.Commands
 
         public async Task<Guid> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
-            //  إنشاء Employee
-            var employee = _mapper.Map<Employee>(request);
-            employee.Id = Guid.NewGuid();
-
-            //  إنشاء User مرتبط بالموظف
-            //var defaultPassword = "123456"; // كلمة مرور افتراضية
+            // انشاء اليوزر
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -43,27 +38,34 @@ namespace Consulate.Application.Features.Employees.Commands
                 UserRoles = new List<UserRole>()
             };
 
-            //  تحديد الدور (افتراضي "Officer")
-            var roleName = string.IsNullOrEmpty(request.RoleName) ? "Officer" : request.RoleName;
+            // تحديد دور اليوزر واذا لم يحدد نضعه اسستنت
+            var roleName = string.IsNullOrWhiteSpace(request.RoleName)
+                ? "Officer"
+                : request.RoleName;
+
             var role = await _roleRepository.GetByNameAsync(roleName, cancellationToken);
 
-            if (role != null)
-            {
-                user.UserRoles.Add(new UserRole
-                {
-                    UserId = user.Id,
-                    RoleId = role.Id
-                });
-            }
+            if (role == null)
+                throw new Exception($"Role '{roleName}' not found");
 
-            //  ربط Employee بالـ User
+            // ربط اليوزر مع الرول
+            user.UserRoles.Add(new UserRole
+            {
+                UserId = user.Id,
+                RoleId = role.Id
+            });
+
+            // انشاء الموظف وربطه باليوزر
+            var employee = _mapper.Map<Employee>(request);
+            employee.Id = Guid.NewGuid();
             employee.UserId = user.Id;
 
-            //  إضافة الكيانات إلى الـ Repository
+            //  حفظ
             await _userRepository.AddAsync(user);
             await _employeeRepository.AddAsync(employee);
 
             return employee.Id;
         }
     }
+
 }

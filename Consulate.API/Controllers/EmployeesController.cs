@@ -16,7 +16,7 @@ public class EmployeesController : ControllerBase
     {
         _mediator = mediator;
     }
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(
         CreateEmployeeCommand command)
@@ -32,7 +32,6 @@ public class EmployeesController : ControllerBase
         return Ok(employee);
     }
     [Authorize(Roles = "Admin")]
-    //[Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll(
     [FromQuery] int pageNumber = 1,
@@ -43,7 +42,7 @@ public class EmployeesController : ControllerBase
 
         return Ok(result);
     }
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(
         Guid id,
@@ -55,8 +54,7 @@ public class EmployeesController : ControllerBase
 
         return Ok(result);
     }
-    // DELETE: api/employees/{id}
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

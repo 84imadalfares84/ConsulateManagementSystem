@@ -14,8 +14,17 @@ namespace Consulate.Application.Mappings
     {
         public EmployeeProfile()
         {
-            // Mapping من Entity إلى DTO
-            CreateMap<Employee, EmployeeDto>();
+
+            CreateMap<Employee, EmployeeDto>()
+               .ForMember(dest => dest.Email,
+          opt => opt.MapFrom(src => src.User.Email))
+
+               .ForMember(dest => dest.RoleName,
+          opt => opt.MapFrom(src =>
+              src.User.UserRoles
+                  .Select(ur => ur.Role.Name)
+                  .FirstOrDefault()
+          ));
 
             // Mapping من CreateEmployeeCommand إلى Entity
             CreateMap<CreateEmployeeCommand, Employee>();
