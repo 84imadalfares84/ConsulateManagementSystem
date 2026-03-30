@@ -1,5 +1,7 @@
 ﻿using Consulate.Application.Features.Auth.Comands.Login;
+using Consulate.Application.Features.Auth.Comands.Refresh;
 using Consulate.Application.Features.Auth.Comands.Register;
+using Consulate.Application.Features.Auth.DTOS;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +29,13 @@ namespace Consulate.API.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost("register")]//الريجيستر كنترولر بيستقبل كوماند من نوع ريجيستر كوماند(يحوي ايميل وباسوورد) و بيرجع اوكي مع الريزالت اللي هو الاكسس توكن والاكسباير ات
         public async Task<IActionResult> Register(RegisterCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result);
+        }
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenCommand command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);

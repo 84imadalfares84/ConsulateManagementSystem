@@ -49,7 +49,7 @@ namespace Consulate.Infrastructure.Services
                 issuer: _config["Jwt:Issuer"],// الجهة المصدرة من هو السيرفر الذي اصدر هذا التوكن
                 audience: _config["Jwt:Audience"],// الجهة المستهدفة من هو المستهلك لهذا التوكن
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),// مدة صلاحية التوكن 30 دقيقة
+                expires: DateTime.UtcNow.AddMinutes(1),// مدة صلاحية التوكن 1 دقيقة
                 signingCredentials: creds // بيانات التوقيع التي تم انشاؤها سابقا
             );
 
@@ -66,5 +66,26 @@ namespace Consulate.Infrastructure.Services
             return Convert.ToBase64String(
                 RandomNumberGenerator.GetBytes(64));// توليد 64 بايت عشوائية وتحويلها إلى نص Base64 لاستخدامها كتوكين تحديث
         }
+
+        public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
+                ValidateLifetime = false // مهم جداً
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+            return principal; // 🔥 لازم يرجع ClaimsPrincipal
+        }
+
     }
-}
+    }
+

@@ -4,6 +4,7 @@ using Consulate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Consulate.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260330063618_refreshtoken")]
+    partial class refreshtoken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,34 +64,6 @@ namespace Consulate.Infrastructure.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("Consulate.Domain.Entities.RefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
-                });
-
             modelBuilder.Entity("Consulate.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -115,15 +90,15 @@ namespace Consulate.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c635b99c-3cc6-4900-ab7e-c31f44fb9a10"),
-                            CreatedAt = new DateTime(2026, 3, 30, 10, 49, 0, 8, DateTimeKind.Utc).AddTicks(1645),
+                            Id = new Guid("eb3a87d1-cee4-4cf9-a6eb-8dfcecd82c4d"),
+                            CreatedAt = new DateTime(2026, 3, 30, 6, 36, 14, 319, DateTimeKind.Utc).AddTicks(1131),
                             IsDeleted = false,
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = new Guid("a035f707-eed9-4b20-b8f7-4017ad5030e5"),
-                            CreatedAt = new DateTime(2026, 3, 30, 10, 49, 0, 8, DateTimeKind.Utc).AddTicks(1651),
+                            Id = new Guid("c0f9e648-491a-4a2c-b3de-ab47b599abb2"),
+                            CreatedAt = new DateTime(2026, 3, 30, 6, 36, 14, 319, DateTimeKind.Utc).AddTicks(1138),
                             IsDeleted = false,
                             Name = "Officer"
                         });
@@ -220,17 +195,6 @@ namespace Consulate.Infrastructure.Migrations
                     b.HasOne("Consulate.Domain.Entities.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("Consulate.Domain.Entities.Employee", "UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Consulate.Domain.Entities.RefreshToken", b =>
-                {
-                    b.HasOne("Consulate.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace Consulate.Infrastructure.Persistence
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         //add other DbSet properties for your entities here
         protected override void OnModelCreating(ModelBuilder builder)
@@ -50,6 +52,10 @@ namespace Consulate.Infrastructure.Persistence
                 new Role { Id = Guid.NewGuid(), Name = "Admin" },
                 new Role { Id = Guid.NewGuid(), Name = "Officer" }
             );
+            builder.Entity<RefreshToken>()
+              .HasOne(r => r.User)
+              .WithMany()
+              .HasForeignKey(r => r.UserId);
 
             base.OnModelCreating(builder);
         }
