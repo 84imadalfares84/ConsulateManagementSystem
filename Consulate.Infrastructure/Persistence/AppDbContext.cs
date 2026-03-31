@@ -52,6 +52,7 @@ namespace Consulate.Infrastructure.Persistence
                 new Role { Id = Guid.NewGuid(), Name = "Admin" },
                 new Role { Id = Guid.NewGuid(), Name = "Officer" }
             );
+            //  إعداد العلاقة بين RefreshToken و User
             builder.Entity<RefreshToken>()
               .HasOne(r => r.User)
               .WithMany()

@@ -83,7 +83,7 @@ namespace Consulate.Infrastructure.Services
 
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
-            return principal; // 🔥 لازم يرجع ClaimsPrincipal
+            return principal; //  لازم يرجع ClaimsPrincipal
         }
 
     }

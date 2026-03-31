@@ -37,7 +37,7 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
             if (string.IsNullOrEmpty(userIdString))
                 throw new Exception("Invalid token");
 
-            // 🔥 مهم: لأن Id نوعه Guid
+            //  مهم: لأن Id نوعه Guid
             if (!Guid.TryParse(userIdString, out var userId))
                 throw new Exception("Invalid user id format");
 
