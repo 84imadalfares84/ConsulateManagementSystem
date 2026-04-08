@@ -76,7 +76,7 @@ namespace Consulate.Infrastructure.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_config["Jwt:Key"])),
-                ValidateLifetime = false // مهم جداً
+                ValidateLifetime = false //  مهم جدا يسمح بقراءة التوكن حتى لو انتهت صلاحيته
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -28,26 +28,28 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
 
         public async Task<AuthResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            // 1. استخراج الـ principal من الـ access token (even if expired)
+            //استخراج الاكسس توكن رغم انخ منتهي من اليوزر الخاص به
             var principal = _jwtService.GetPrincipalFromExpiredToken(request.AccessToken);
 
+            //استخراج اليوزر اي دي من الكلايمز 
             var userIdString = principal.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
 
             if (string.IsNullOrEmpty(userIdString))
                 throw new Exception("Invalid token");
 
-            // 🔥 مهم: لأن Id نوعه Guid
+            // التحقق من صحة اليوزر اي دي
             if (!Guid.TryParse(userIdString, out var userId))
                 throw new Exception("Invalid user id format");
 
-            // 2. جلب refresh token من DB
+            //جلب الرفرش توكن من الداتا بيز
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
-
+            //التحقق من صحة الرفرش توكن اذا كان موجودا و غير مستخدم و غير منتهي الصلاحية
             if (storedToken == null || storedToken.IsUsed || storedToken.ExpiryDate < DateTime.UtcNow)
                 throw new Exception("Invalid token");
 
-            // 3. جلب المستخدم
+            //  جلب المستخدم
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
@@ -57,11 +59,11 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
             var newAccessToken = _jwtService.GenerateAccessToken(user);
             var newRefreshToken = _jwtService.GenerateRefreshToken();
 
-            // 5. إلغاء التوكن القديم (Rotation)
+            //  إلغاء التوكن القديم وهو تطبيق لمفهوم الرفرش توكن الواحد لكل مرة (rotation)
             storedToken.IsUsed = true;
             await _refreshTokenRepository.UpdateAsync(storedToken);
 
-            // 6. حفظ refresh token الجديد
+            // حفظ الرفرش توكن الجديد في الداتا بيز
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
                 Token = newRefreshToken,
@@ -70,7 +72,7 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
                 ExpiryDate = DateTime.UtcNow.AddDays(7)
             });
 
-            // 7. إرجاع النتيجة
+            //  إرجاع النتيجة
             return new AuthResponse(newAccessToken, newRefreshToken);
         }
     }
