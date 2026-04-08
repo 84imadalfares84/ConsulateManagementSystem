@@ -31,10 +31,23 @@ namespace Consulate.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Token == token);
         }
 
+        public async Task<List<RefreshToken>> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.RefreshTokens
+                .Where(x => x.UserId == userId && !x.IsRevoked && !x.IsUsed)
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(RefreshToken token)
         {
             _context.RefreshTokens.Update(token);
             await _context.SaveChangesAsync();
+        }
+
+        public Task UpdateRangeAsync(List<RefreshToken> token)
+        {
+            _context.RefreshTokens.UpdateRange(token);
+            return _context.SaveChangesAsync();
         }
     }
 }

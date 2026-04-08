@@ -46,7 +46,10 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
             //جلب الرفرش توكن من الداتا بيز
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
             //التحقق من صحة الرفرش توكن اذا كان موجودا و غير مستخدم و غير منتهي الصلاحية
-            if (storedToken == null || storedToken.IsUsed || storedToken.ExpiryDate < DateTime.UtcNow)
+            if (storedToken == null 
+                || storedToken.IsUsed
+                || storedToken.IsRevoked
+                || storedToken.ExpiryDate < DateTime.UtcNow)
                 throw new Exception("Invalid token");
 
             //  جلب المستخدم

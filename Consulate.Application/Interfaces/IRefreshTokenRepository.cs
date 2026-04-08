@@ -12,5 +12,8 @@ namespace Consulate.Application.Interfaces
         Task AddAsync(RefreshToken token);
         Task<RefreshToken?> GetByTokenAsync(string token);
         Task UpdateAsync(RefreshToken token);
+        Task<List<RefreshToken>> GetByUserIdAsync(Guid userId);        
+        Task UpdateRangeAsync(List<RefreshToken> token);
+        
     }
 }

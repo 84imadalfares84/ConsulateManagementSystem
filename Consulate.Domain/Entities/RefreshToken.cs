@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,10 @@ namespace Consulate.Domain.Entities
 
         public DateTime ExpiryDate { get; set; }
 
-        public bool IsUsed { get; set; }
+        public bool IsUsed { get; set; }//خاص بال Rotation
 
         public User User { get; set; } = null!;
+        public bool IsRevoked { get; set; }//خاص بال lougoff
+        public DateTime? RevokedAt { get; set; }
     }
 }
