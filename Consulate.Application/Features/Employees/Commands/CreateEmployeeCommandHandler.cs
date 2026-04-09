@@ -38,7 +38,7 @@ namespace Consulate.Application.Features.Employees.Commands
                 UserRoles = new List<UserRole>()
             };
 
-            // تحديد دور اليوزر واذا لم يحدد نضعه اسستنت
+            // تحديد دور اليوزر واذا لم يحدد نضعه افسر
             var roleName = string.IsNullOrWhiteSpace(request.RoleName)
                 ? "Officer"
                 : request.RoleName;

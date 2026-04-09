@@ -1,7 +1,6 @@
 ﻿using Consulate.Application.Features.Employees.Commands;
 using Consulate.Application.Features.Employees.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Consulate.API.Controllers;
@@ -17,7 +16,7 @@ public class EmployeesController : ControllerBase
         _mediator = mediator;
     }
     //[Authorize(Roles = "Admin")]
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Create(
         CreateEmployeeCommand command)
     {
