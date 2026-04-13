@@ -18,6 +18,8 @@ namespace Consulate.Domain.Entities
         public Employee Employee { get; set; }//navigation property 
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public string? EmailVerificationToken { get; set; }
     }
 }
 

@@ -16,19 +16,22 @@ namespace Consulate.Application.Features.Auth.Comands.Register
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleRepository _roleRepository; 
+        private readonly IEmailService _emailService;
 
         public RegisterCommandHandler(
         
             IUserRepository userRepository,
             IPasswordHasher passwordHasher,
             IRoleRepository roleRepository,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            IEmailService emailService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
             _roleRepository = roleRepository;
+            _emailService = emailService;
          
         }
 
@@ -47,6 +50,8 @@ namespace Consulate.Application.Features.Auth.Comands.Register
                 UserRoles = new List<UserRole>()
 
             };
+            user.EmailVerificationToken = Guid.NewGuid().ToString();
+            user.IsEmailVerified = false;
             //  جلب الدور
             string roleName = string.IsNullOrEmpty(request.RoleName) ? "Officer" : request.RoleName;
             var role = await _roleRepository.GetByNameAsync(roleName, cancellationToken);
@@ -61,6 +66,8 @@ namespace Consulate.Application.Features.Auth.Comands.Register
             }
            
             await _userRepository.AddAsync(user);
+
+            await _emailService.SendVerificationEmail(user.Email, user.EmailVerificationToken);
 
             var accessToKen = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();

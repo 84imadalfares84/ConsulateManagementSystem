@@ -3,6 +3,7 @@ using Consulate.Application.Common;
 using Consulate.Application.Features.Employees.Commands;
 using Consulate.Application.Interfaces;
 using Consulate.Application.Mappings;
+using Consulate.Infrastructure.Email;
 using Consulate.Infrastructure.Persistence;
 using Consulate.Infrastructure.Repositories;
 using Consulate.Infrastructure.Services;
@@ -42,6 +43,10 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<EmailSettings>(
+       builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // هذا الكود يخبر التطبيق كيف يتحقق من صحة التوكن المرسل من المستخدم
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

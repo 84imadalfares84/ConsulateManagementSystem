@@ -1,4 +1,5 @@
-﻿using Consulate.Application.Features.Auth.Comands.Login;
+﻿using Consulate.Application.Features.Auth.Comands.EmailVerification;
+using Consulate.Application.Features.Auth.Comands.Login;
 using Consulate.Application.Features.Auth.Comands.Refresh;
 using Consulate.Application.Features.Auth.Comands.Register;
 using Consulate.Application.Features.Auth.Comands.RevokeAll;
@@ -52,6 +53,12 @@ namespace Consulate.API.Controllers
             await _mediator.Send(new RevokeAllToKensCommand(id));
 
             return Ok("Logged out from all devices");
+        }
+        [HttpGet("verify-email")]
+        public async Task<IActionResult> VerifyEmail(string token)
+        {
+            var result = await _mediator.Send(new VerifyEmailCommand(token));
+            return Ok(result);
         }
     }
 }

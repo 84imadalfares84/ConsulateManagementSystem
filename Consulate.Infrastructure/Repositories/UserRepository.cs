@@ -51,6 +51,10 @@ namespace Consulate.Infrastructure.Repositories
             return await _context.Users.FindAsync(id);
         }
 
+        public async Task<User?> GetByVerificationTokenAsync(string token)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.EmailVerificationToken == token);
+        }
     }
     }
 
