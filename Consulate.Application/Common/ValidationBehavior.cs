@@ -40,6 +40,6 @@ public class ValidationBehavior<TRequest, TResponse>
                 throw new ValidationException(failures);
         }
 
-        return await next();//.نجاح التحقق من صحة الطلب، يتم تمرير الطلب إلى المعالج التالي في السلسلة.
+        return await next();//.نجاح التحقق من صحة الطلب، يتم تمرير الطلب إلى المعالج التالي في السلسلة اذا نجح التحقق.
     }
 }

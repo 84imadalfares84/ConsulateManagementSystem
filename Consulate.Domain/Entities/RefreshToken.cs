@@ -17,7 +17,7 @@ namespace Consulate.Domain.Entities
 
         public DateTime ExpiryDate { get; set; }
 
-        public bool IsUsed { get; set; }//خاص بال Rotation
+        public bool IsUsed { get; set; }//خاص بال Rotation لالغاء التوكن القديم بعد استخدامه في الحصول على توكن جديد
 
         public User User { get; set; } = null!;
         public bool IsRevoked { get; set; }//خاص بال lougoff

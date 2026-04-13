@@ -18,7 +18,8 @@ namespace Consulate.Application.Features.Auth.Comands.RevokeAll
         }
         public async Task<Unit> Handle(RevokeAllToKensCommand request, CancellationToken cancellationToken)
         {
-            var tokens = await _refreshTokenRepository.GetByUserIdAsync(request.UserId);
+            var tokens = await _refreshTokenRepository.GetByUserIdAsync(request.UserId);//حلب كل التوكنات اللي تخص اليوزر ده
+
             if (tokens != null && tokens.Any())
             {
                 foreach (var token in tokens)

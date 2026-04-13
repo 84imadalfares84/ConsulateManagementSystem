@@ -2,10 +2,8 @@
 using Consulate.Application.Features.Auth.Comands.Refresh;
 using Consulate.Application.Features.Auth.Comands.Register;
 using Consulate.Application.Features.Auth.Comands.RevokeAll;
-using Consulate.Application.Features.Auth.DTOS;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

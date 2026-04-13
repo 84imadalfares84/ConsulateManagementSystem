@@ -28,7 +28,7 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
 
         public async Task<AuthResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            //استخراج الاكسس توكن رغم انخ منتهي من اليوزر الخاص به
+            //استخراج الاكسس توكن رغم انه منتهي من اليوزر الخاص به
             var principal = _jwtService.GetPrincipalFromExpiredToken(request.AccessToken);
 
             //استخراج اليوزر اي دي من الكلايمز 
@@ -39,7 +39,7 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
             if (string.IsNullOrEmpty(userIdString))
                 throw new Exception("Invalid token");
 
-            // 🔥 مهم: لأن Id نوعه Guid
+            // اختبار صحة اليوزر اي دي حيث يجب ان يكون في صيغة Guid
             if (!Guid.TryParse(userIdString, out var userId))
                 throw new Exception("Invalid user id format");
 
