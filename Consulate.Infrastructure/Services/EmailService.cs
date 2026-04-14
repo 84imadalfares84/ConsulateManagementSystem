@@ -13,6 +13,30 @@ public class EmailService : IEmailService
         _settings = settings.Value;
     }
 
+    public async Task SendLoginNotificationEmail(string email)
+    {
+        var body = @"
+    <h3>Security Alert</h3>
+    <p>Your account has been logged in successfully.</p>
+    <p>If this wasn't you, please change your password immediately.</p>
+    ";
+
+        var message = new MailMessage();
+        message.From = new MailAddress(_settings.Email);
+        message.To.Add(email);
+        message.Subject = "Login Alert";
+        message.Body = body;
+        message.IsBodyHtml = true;
+
+        using var smtp = new SmtpClient(_settings.Host, _settings.Port)
+        {
+            Credentials = new NetworkCredential(_settings.Email, _settings.Password),
+            EnableSsl = _settings.EnableSsl
+        };
+
+        await smtp.SendMailAsync(message);
+    }
+
     // ✅ الدالة الأساسية
     public async Task SendVerificationEmail(string email, string token)
     {

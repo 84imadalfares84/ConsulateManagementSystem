@@ -9,5 +9,6 @@ namespace Consulate.Application.Interfaces
     public interface IEmailService
     {
         Task SendVerificationEmail(string email, string token);
+        Task SendLoginNotificationEmail(string email);
     }
 }

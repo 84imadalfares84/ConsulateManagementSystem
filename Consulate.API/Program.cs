@@ -9,6 +9,8 @@ using Consulate.Infrastructure.Persistence;
 using Consulate.Infrastructure.Repositories;
 using Consulate.Infrastructure.Services;
 using FluentValidation;
+using Hangfire;
+using Hangfire.MemoryStorage;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(
         typeof(CreateEmployeeCommand).Assembly));
+//HangFire 
+builder.Services.AddHangfire(config =>
+    config.UseMemoryStorage());
+
+builder.Services.AddHangfireServer();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(EmployeeProfile).Assembly);

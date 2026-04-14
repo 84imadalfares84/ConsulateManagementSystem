@@ -2,6 +2,7 @@ using Consulate.Application.Common.Exceptions;
 using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
 using Consulate.Domain.Entities;
+using Hangfire;
 using MediatR;
 
 namespace Consulate.Application.Features.Auth.Comands.Login
@@ -36,6 +37,11 @@ namespace Consulate.Application.Features.Auth.Comands.Login
 
             // 2. Refresh Token 
             var refreshToken = _jwtService.GenerateRefreshToken();
+
+            //استخدام باك غراوند سيرفس
+            BackgroundJob.Enqueue<IEmailService>(x =>
+               x.SendLoginNotificationEmail(user.Email));
+
 
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
