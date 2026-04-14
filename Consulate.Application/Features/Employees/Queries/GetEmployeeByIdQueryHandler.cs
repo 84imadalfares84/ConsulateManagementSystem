@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Consulate.Application.Common.Exceptions;
 using Consulate.Application.DTOs;
 using Consulate.Application.Interfaces;
 using MediatR;
@@ -25,7 +26,7 @@ namespace Consulate.Application.Features.Employees.Queries
         {
             var employee = await _repository.GetByIdAsync(request.Id);
             if (employee == null)
-                throw new Exception("Employee not found");
+                throw new NotFoundException("Employee was not found.");
 
             return _mapper.Map<EmployeeDto>(employee);
         }

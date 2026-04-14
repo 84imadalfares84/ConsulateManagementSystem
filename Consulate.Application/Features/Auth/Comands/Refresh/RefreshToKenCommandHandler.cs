@@ -1,13 +1,14 @@
-﻿using Consulate.Application.Features.Auth.DTOS;
+using System.Security.Claims;
+using Consulate.Application.Common.Exceptions;
+using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
 using Consulate.Domain.Entities;
 using MediatR;
-using System.Security.Claims;
 
 namespace Consulate.Application.Features.Auth.Comands.Refresh
 {
     public class RefreshTokenCommandHandler
-    : IRequestHandler<RefreshTokenCommand, AuthResponse>
+        : IRequestHandler<RefreshTokenCommand, AuthResponse>
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
@@ -17,56 +18,46 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
             IUserRepository userRepository,
             IJwtService jwtService,
             IRefreshTokenRepository refreshTokenRepository)
-           
- 
         {
             _userRepository = userRepository;
             _jwtService = jwtService;
             _refreshTokenRepository = refreshTokenRepository;
-            
         }
 
         public async Task<AuthResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            //استخراج الاكسس توكن رغم انه منتهي من اليوزر الخاص به
             var principal = _jwtService.GetPrincipalFromExpiredToken(request.AccessToken);
 
-            //استخراج اليوزر اي دي من الكلايمز 
             var userIdString = principal.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-
             if (string.IsNullOrEmpty(userIdString))
-                throw new Exception("Invalid token");
+                throw new UnauthorizedException("Invalid access token.");
 
-            // اختبار صحة اليوزر اي دي حيث يجب ان يكون في صيغة Guid
             if (!Guid.TryParse(userIdString, out var userId))
-                throw new Exception("Invalid user id format");
+                throw new BadRequestException("Invalid user id format.");
 
-            //جلب الرفرش توكن من الداتا بيز
             var storedToken = await _refreshTokenRepository.GetByTokenAsync(request.RefreshToken);
-            //التحقق من صحة الرفرش توكن اذا كان موجودا و غير مستخدم و غير منتهي الصلاحية
-            if (storedToken == null 
+
+            if (storedToken == null
                 || storedToken.IsUsed
                 || storedToken.IsRevoked
                 || storedToken.ExpiryDate < DateTime.UtcNow)
-                throw new Exception("Invalid token");
+            {
+                throw new UnauthorizedException("Invalid refresh token.");
+            }
 
-            //  جلب المستخدم
             var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
-                throw new Exception("Invalid user");
+                throw new UnauthorizedException("Invalid user.");
 
-            // 4. إنشاء tokens جديدة
             var newAccessToken = _jwtService.GenerateAccessToken(user);
             var newRefreshToken = _jwtService.GenerateRefreshToken();
 
-            //  إلغاء التوكن القديم وهو تطبيق لمفهوم الرفرش توكن الواحد لكل مرة (rotation)
             storedToken.IsUsed = true;
             await _refreshTokenRepository.UpdateAsync(storedToken);
 
-            // حفظ الرفرش توكن الجديد في الداتا بيز
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
                 Token = newRefreshToken,
@@ -75,7 +66,6 @@ namespace Consulate.Application.Features.Auth.Comands.Refresh
                 ExpiryDate = DateTime.UtcNow.AddDays(7)
             });
 
-            //  إرجاع النتيجة
             return new AuthResponse(newAccessToken, newRefreshToken);
         }
     }

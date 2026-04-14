@@ -1,4 +1,5 @@
 using AutoMapper;
+using Consulate.API.Middleware;
 using Consulate.Application.Common;
 using Consulate.Application.Features.Employees.Commands;
 using Consulate.Application.Interfaces;
@@ -73,6 +74,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 //app.UseHttpsRedirection();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 

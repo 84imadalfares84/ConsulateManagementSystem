@@ -1,4 +1,5 @@
-﻿using Consulate.Application.Interfaces;
+using Consulate.Application.Common.Exceptions;
+using Consulate.Application.Interfaces;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Consulate.Application.Features.Employees.Commands
             var employee = await _repository.GetByIdAsync(request.Id);
 
             if (employee == null)
-                throw new Exception("Employee not found");
+                throw new NotFoundException("Employee was not found.");
 
             employee.IsDeleted = true;
 

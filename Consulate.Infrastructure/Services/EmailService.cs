@@ -13,21 +13,18 @@ public class EmailService : IEmailService
         _settings = settings.Value;
     }
 
+    // ✅ الدالة الأساسية
     public async Task SendVerificationEmail(string email, string token)
     {
         var link = $"https://localhost:5001/api/auth/verify-email?token={token}";
 
-        var body = $@"
-        <h2>Verify Email</h2>
-        <p>Click below:</p>
-        <a href='{link}'>Verify</a>
-        ";
+        var htmlBody = GetHtmlTemplate(link); // 👈 استدعاء الدالة
 
         var message = new MailMessage();
         message.From = new MailAddress(_settings.Email);
         message.To.Add(email);
-        message.Subject = "Verify Email";
-        message.Body = body;
+        message.Subject = "Verify Your Email";
+        message.Body = htmlBody;
         message.IsBodyHtml = true;
 
         using var smtp = new SmtpClient(_settings.Host, _settings.Port)
@@ -37,5 +34,36 @@ public class EmailService : IEmailService
         };
 
         await smtp.SendMailAsync(message);
+    }
+
+    // 🔥 هون تحط الدالة (داخل نفس الكلاس)
+    private string GetHtmlTemplate(string link)
+    {
+        return $@"
+        <html>
+        <body style='font-family:Arial; text-align:center;'>
+
+            <h2>Welcome 👋</h2>
+            <p>Please verify your email by clicking the button below:</p>
+
+            <a href='{link}' 
+               style='
+                    display:inline-block;
+                    padding:12px 25px;
+                    background-color:#28a745;
+                    color:white;
+                    text-decoration:none;
+                    border-radius:5px;
+                    font-size:16px;
+               '>
+                Verify Email
+            </a>
+
+            <p style='margin-top:20px; color:gray;'>
+                If you did not request this, ignore this email.
+            </p>
+
+        </body>
+        </html>";
     }
 }

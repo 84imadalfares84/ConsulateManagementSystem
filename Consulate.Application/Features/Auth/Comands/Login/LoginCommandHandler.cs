@@ -1,4 +1,5 @@
-﻿using Consulate.Application.Features.Auth.DTOS;
+using Consulate.Application.Common.Exceptions;
+using Consulate.Application.Features.Auth.DTOS;
 using Consulate.Application.Interfaces;
 using Consulate.Domain.Entities;
 using MediatR;
@@ -27,7 +28,7 @@ namespace Consulate.Application.Features.Auth.Comands.Login
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                throw new Exception("Invalid email or password");
+                throw new UnauthorizedException("Invalid email or password.");
             }
 
             // 1. Access Token

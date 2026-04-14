@@ -1,4 +1,5 @@
-﻿using Consulate.Application.Interfaces;
+using Consulate.Application.Common.Exceptions;
+using Consulate.Application.Interfaces;
 using Consulate.Domain.Entities;
 using MediatR;
 using AutoMapper;
@@ -46,7 +47,7 @@ namespace Consulate.Application.Features.Employees.Commands
             var role = await _roleRepository.GetByNameAsync(roleName, cancellationToken);
 
             if (role == null)
-                throw new Exception($"Role '{roleName}' not found");
+                throw new NotFoundException($"Role '{roleName}' was not found.");
 
             // ربط اليوزر مع الرول
             user.UserRoles.Add(new UserRole

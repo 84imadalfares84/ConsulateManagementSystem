@@ -1,10 +1,6 @@
-﻿using Consulate.Application.Interfaces;
+using Consulate.Application.Common.Exceptions;
+using Consulate.Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Consulate.Application.Features.Auth.Comands.EmailVerification
 {
@@ -22,7 +18,7 @@ namespace Consulate.Application.Features.Auth.Comands.EmailVerification
             var user = await _userRepository.GetByVerificationTokenAsync(request.Token);
 
             if (user == null)
-                throw new Exception("Invalid token");
+                throw new BadRequestException("Invalid verification token.");
 
             user.IsEmailVerified = true;
             user.EmailVerificationToken = null;

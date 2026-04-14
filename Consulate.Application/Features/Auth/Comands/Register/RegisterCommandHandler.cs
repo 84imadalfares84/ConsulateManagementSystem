@@ -2,11 +2,6 @@
 using Consulate.Application.Interfaces;
 using Consulate.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Consulate.Application.Features.Auth.Comands.Register
 {
@@ -71,11 +66,13 @@ namespace Consulate.Application.Features.Auth.Comands.Register
 
             var accessToKen = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
+            var emailVerificationToken = user.EmailVerificationToken;
 
             return new AuthResponse(
                 accessToKen,refreshToken
                 
             );
+         
         }
     }
 }
