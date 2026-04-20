@@ -20,7 +20,7 @@ namespace Consulate.Domain.Entities
         public bool IsUsed { get; set; }//خاص بال Rotation لالغاء التوكن القديم بعد استخدامه في الحصول على توكن جديد
 
         public User User { get; set; } = null!;
-        public bool IsRevoked { get; set; }//خاص بال lougoff
+        public bool IsRevoked { get; set; }//خاص بال logoff
         public DateTime? RevokedAt { get; set; }
     }
 }

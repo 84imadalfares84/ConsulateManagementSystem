@@ -28,7 +28,13 @@ builder.Services.AddHangfire(config =>
     config.UseMemoryStorage());
 
 builder.Services.AddHangfireServer();
-
+//Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "ConsulateApp_";
+});
+builder.Services.AddScoped<ICacheService, CacheService>();
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(EmployeeProfile).Assembly);
 

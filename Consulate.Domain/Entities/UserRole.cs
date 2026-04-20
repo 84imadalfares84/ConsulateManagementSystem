@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Consulate.Domain.Entities
@@ -9,7 +10,7 @@ namespace Consulate.Domain.Entities
     public class UserRole
     {
         public Guid UserId { get; set; }
-
+       
         public User User { get; set; } = null!;
 
         public Guid RoleId { get; set; }
