@@ -7,10 +7,12 @@ namespace Consulate.Application.Features.Auth.Comands.EmailVerification
     public class VerifyEmailHandler : IRequestHandler<VerifyEmailCommand, string>
     {
         private readonly IUserRepository _userRepository;
+        private readonly ICacheService _cacheService;
 
-        public VerifyEmailHandler(IUserRepository userRepository)
+        public VerifyEmailHandler(IUserRepository userRepository, ICacheService cacheService)
         {
             _userRepository = userRepository;
+           _cacheService = cacheService;
         }
 
         public async Task<string> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
@@ -21,6 +23,7 @@ namespace Consulate.Application.Features.Auth.Comands.EmailVerification
                 throw new BadRequestException("Invalid verification token.");
 
             user.IsEmailVerified = true;
+            await _cacheService.RemoveAsync($"user:{user.Email}");
             user.EmailVerificationToken = null;
 
             await _userRepository.SaveChangesAsync();

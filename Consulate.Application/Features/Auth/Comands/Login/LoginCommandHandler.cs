@@ -30,16 +30,16 @@ namespace Consulate.Application.Features.Auth.Comands.Login
         {
             var cacheKey = $"user:{request.Email}";
 
-            // 🔥 1. محاولة جلب المستخدم من Redis
+            //  محاولة جلب المستخدم من Redis
             var cachedUser = await _cacheService.GetAsync<UserCacheDto>(cacheKey);
 
             User user;
 
             if (cachedUser == null)
             {
-                Console.WriteLine("🔥 From DB");
+                Console.WriteLine(" From DB");
 
-                // 🟢 جلب من DB
+                // جلب من DB
                 user = await _userRepository.GetByEmailAsync(request.Email);
 
                 if (user == null)
@@ -55,14 +55,14 @@ namespace Consulate.Application.Features.Auth.Comands.Login
                     Roles = user.UserRoles.Select(x => x.Role.Name).ToList()
                 };
 
-                // 🟢 تخزين في Redis
+                //  تخزين في Redis
                 await _cacheService.SetAsync(cacheKey, userDto, TimeSpan.FromMinutes(30));
             }
             else
             {
-                Console.WriteLine("⚡ From Redis");
+                Console.WriteLine(" From Redis");
 
-                // 🟢 تحويل DTO → Entity
+                //  تحويل DTO → Entity
                 user = new User
                 {
                     Id = cachedUser.Id,
@@ -72,25 +72,25 @@ namespace Consulate.Application.Features.Auth.Comands.Login
                 };
             }
 
-            // 🔐 تحقق من كلمة المرور
+            //  تحقق من كلمة المرور
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 throw new UnauthorizedException("Invalid email or password.");
 
-            // 📧 تحقق من تفعيل الإيميل
+            //  تحقق من تفعيل الإيميل
             if (!user.IsEmailVerified)
-                throw new UnauthorizedException("Email not verified.");
+                throw new UnauthorizedException("imad Email not verified.");
 
-            // 🔑 إنشاء Access Token
+            //  إنشاء Access Token
             var accessToken = _jwtService.GenerateAccessToken(user);
 
-            // 🔁 إنشاء Refresh Token
+            //  إنشاء Refresh Token
             var refreshToken = _jwtService.GenerateRefreshToken();
 
-            // 📧 إرسال إشعار تسجيل دخول (Hangfire)
+            //  إرسال إشعار تسجيل دخول (Hangfire)
             BackgroundJob.Enqueue<IEmailService>(x =>
                 x.SendLoginNotificationEmail(user.Email));
 
-            // 💾 تخزين Refresh Token
+            //  تخزين Refresh Token
             await _refreshTokenRepository.AddAsync(new RefreshToken
             {
                 Token = refreshToken,
@@ -101,7 +101,7 @@ namespace Consulate.Application.Features.Auth.Comands.Login
                 ExpiryDate = DateTime.UtcNow.AddDays(7)
             });
 
-            // 📤 النتيجة
+            //  النتيجة
             return new AuthResponse(
                 accessToken,
                 refreshToken
