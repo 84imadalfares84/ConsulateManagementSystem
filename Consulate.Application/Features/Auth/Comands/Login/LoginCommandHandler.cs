@@ -45,7 +45,7 @@ namespace Consulate.Application.Features.Auth.Comands.Login
                 if (user == null)
                     throw new UnauthorizedException("Invalid email or password.");
 
-                // 🟢 تحويل إلى DTO (لتجنب Circular Reference)
+                //  تحويل إلى DTO (لتجنب Circular Reference)
                 var userDto = new UserCacheDto
                 {
                     Id = user.Id,

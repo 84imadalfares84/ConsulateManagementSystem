@@ -13,13 +13,13 @@ public class CacheService : ICacheService
 
     public async Task SetAsync(string key, object value, TimeSpan? expiry = null)
     {
-        var options = new DistributedCacheEntryOptions
+        var options = new DistributedCacheEntryOptions//تحديد خيارات التخزين في Redis
         {
             AbsoluteExpirationRelativeToNow = expiry ?? TimeSpan.FromMinutes(30)
         };
 
-        // 🔥 هون serialization
-        var json = JsonSerializer.Serialize(value);
+        //  هون serialization
+        var json = JsonSerializer.Serialize(value);//تحويل الكائن إلى JSON string
 
         await _cache.SetStringAsync(key, json, options);
     }
@@ -31,8 +31,8 @@ public class CacheService : ICacheService
         if (json == null)
             return default;
 
-        // 🔥 هون deserialization
-        return JsonSerializer.Deserialize<T>(json);
+        //  هون deserialization
+        return JsonSerializer.Deserialize<T>(json);//تحويل جيسون الى كائن من نوع T
     }
 
     public async Task RemoveAsync(string key)
