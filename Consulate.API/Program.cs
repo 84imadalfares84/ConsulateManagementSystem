@@ -84,13 +84,45 @@ builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
+
+// Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
-//app.UseHttpsRedirection();
+
+// Routing يجب أن يكون أولاً
+app.UseRouting();
+
+// Exception Handling Middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+// Authentication & Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
+// التعامل مع Status Codes مثل 404 و 405 وتحويلها إلى JSON
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+    var path = context.HttpContext.Request.Path;
+
+    response.ContentType = "application/json";
+
+    var message = response.StatusCode switch
+    {
+        404 => "Resource not found",
+        405 => "Method Not Allowed",
+        _ => "An error occurred"
+    };
+
+    await response.WriteAsJsonAsync(new
+    {
+        StatusCode = response.StatusCode,
+        Message = message,
+        Path = path
+    });
+});
+
+// Map Controllers
 app.MapControllers();
 
 app.Run();

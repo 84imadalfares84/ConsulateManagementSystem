@@ -37,7 +37,7 @@ public class ValidationBehavior<TRequest, TResponse>
                 .ToList();
 
             if (failures.Count != 0)
-                throw new ValidationException(failures);
+                throw new ValidationException(failures);//هذا الاكسيبشن يتم رميه إذا كان هناك أي أخطاء في التحقق من صحة الطلب، ويتم تمرير قائمة الأخطاء إلى الاستثناء.
         }
 
         return await next();//.نجاح التحقق من صحة الطلب، يتم تمرير الطلب إلى المعالج التالي في السلسلة اذا نجح التحقق.
