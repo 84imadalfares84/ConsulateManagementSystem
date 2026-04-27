@@ -53,7 +53,7 @@ public class ExceptionHandlingMiddleware
         await context.Response.WriteAsync(json);
     }
 
-    private static ErrorResponse CreateResponse(
+    private static ErrorResponse CreateResponse(// تحويل الاستثناء إلى كائن استجابة خطأ جيسون مناسب بناءً على نوع الاستثناء
         HttpContext context,
         Exception exception,
         bool includeDetails)
@@ -89,7 +89,7 @@ public class ExceptionHandlingMiddleware
             Details: includeDetails ? exception.Message : null);
     }
 
-    private sealed record ErrorResponse(
+    private sealed record ErrorResponse(// تعريف سجل لتمثيل استجابة الخطأ التي سيتم إرجاعها كجيسون
         int StatusCode,
         string Message,
         string TraceId,
